@@ -1,0 +1,10 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VS Code Local History
+.history/
+
+# Environment variables (if you decide to use them for API keys)
+.env
