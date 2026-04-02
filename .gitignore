@@ -1,10 +1,24 @@
+
 # Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
 
-# VS Code Local History
-.history/
-
-# Environment variables (if you decide to use them for API keys)
+# Environment variables
 .env
+
+# Build / Package Artifacts
+*.egg-info/
+build/
+dist/
+
+# Virtual Environments
+.venv/
+venv/
+env/
+
+# IDE / OS specific
+.history/
+.vscode/
+.cursor/
+.DS_Store

@@ -42,213 +42,106 @@ ai-eval evaluate transcript.md
 
 Use `--dry-run` to exercise the Rich UI locally or `--json` to emit raw `TranscriptEvaluation` JSON.
 
-Real terminal output:
+*(Note: You can find 2 real-world sample transcripts required for this assignment inside the `/transcripts/real_world_transcripts` folder of this repository).* 
 
-```
-2026-04-01 20:57:25.654 | SUCCESS  | ai_eval_cli.evaluation.client:evaluate:61 - Evaluation complete for %s
-─────────────────────────────────────────────────────────────── Transcript: flawless_staff_eng ────────────────────────────────────────────────────────────────
+
+### 🐕 Meta-Evaluation (Dogfooding)
+
+To stress-test the CLI, we ran it against the AI chat transcript that documented the creation of `ai-eval-cli` itself. It successfully handled the raw JSON ingestion path, exercised the model fallback logic, and accurately audited the prompt engineering dialogue from its own build. Below is the terminal output from that dogfooding run (insert the provided log here).
+
+```bash
+─────────────────────────────────────────────────────────────────── Transcript: gemini-chat ───────────────────────────────────────────────────────────────────
 ╭─────────────────────────────────────────────────────────────────────── Overall Score ───────────────────────────────────────────────────────────────────────╮
-│                                                                            10/10                                                                            │
-╰───────────────────────────────────────────────────────────────── Staff-level effectiveness ─────────────────────────────────────────────────────────────────╯
-                                                                       Capability Scores                                                                       
-╭───────────────────────────┬────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ Metric                    │ Score (confidence) │ Rationale                                                                                                  │
-├───────────────────────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ Architecture Coherence    │    10/10 (100%)    │ The assistant immediately pivoted the conversation from premature coding to high-level system design,      │
-│                           │                    │ proposing a robust architecture that considered data sovereignty (TEE) and workflow management             │
-│                           │                    │ (LangGraph). This proactive, holistic view is a hallmark of Staff-level architectural thinking.            │
-│ Context Provisioning      │     9/10 (95%)     │ The assistant demonstrated excellent context provisioning by immediately recognizing the sensitive nature  │
-│                           │                    │ of medical data and proactively bringing up HIPAA/GDPR compliance. It also sought crucial clarification on │
-│                           │                    │ the policy DB interface, which is vital for integration.                                                   │
-│ Iterative Reasoning       │    10/10 (100%)    │ The assistant seamlessly integrated user feedback regarding 'LangGraph' and 'Security is priority #1' into │
-│                           │                    │ its design. It immediately translated these inputs into a concrete, actionable plan for PII redaction,     │
-│                           │                    │ demonstrating highly effective iterative refinement.                                                       │
-│ Tooling Coordination      │     9/10 (90%)     │ The assistant not only proposed LangGraph for state management but also immediately provided a practical   │
-│                           │                    │ Python utility for PII redaction, complete with a code snippet and a graph state schema. This shows strong │
-│                           │                    │ coordination between architectural choices and practical implementation tools.                             │
-│ Safety/Security Awareness │    10/10 (100%)    │ This was a standout capability. The assistant proactively identified HIPAA/GDPR compliance as a critical   │
-│                           │                    │ concern, suggested a Trusted Execution Environment (TEE) for data sovereignty, and designed a local PII    │
-│                           │                    │ redaction mechanism as a core security measure. This demonstrates a deep, proactive understanding of       │
-│                           │                    │ security in sensitive domains.                                                                             │
-╰───────────────────────────┴────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭────────────────────────────────────────────────────────────────────── Timeline Phases ──────────────────────────────────────────────────────────────────────╮
-│ Timeline Phases                                                                                                                                             │
-│ ├── Initial Scoping & Risk Identification 10/10 (100% confidence)                                                                                           │
-│ │   ├── Highlights                                                                                                                                          │
-│ │   │   ├── Proactive architectural thinking                                                                                                                │
-│ │   │   ├── Early identification of security and compliance risks                                                                                           │
-│ │   │   └── Shifting focus from implementation to design                                                                                                    │
-│ │   └── Concerns                                                                                                                                            │
-│ ├── Architectural Design & Clarification 9/10 (95% confidence)                                                                                              │
-│ │   ├── Highlights                                                                                                                                          │
-│ │   │   ├── Proposed specific architectural components                                                                                                      │
-│ │   │   ├── Sought necessary clarifications for integration                                                                                                 │
-│ │   │   └── Structured approach to design                                                                                                                   │
-│ │   └── Concerns                                                                                                                                            │
-│ └── Security-First Implementation Planning 10/10 (100% confidence)                                                                                          │
-│     ├── Highlights                                                                                                                                          │
-│     │   ├── Rapid iteration based on user feedback                                                                                                          │
-│     │   ├── Concrete security implementation (PII redaction)                                                                                                │
-│     │   └── Provided practical code snippet for initial setup                                                                                               │
-│     └── Concerns                                                                                                                                            │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭──────────────────────────────────────────────────────────────────── Prompt Engineering ─────────────────────────────────────────────────────────────────────╮
-│ - Initial Request: 7/10 | The user's initial prompt was clear about the project goal but prematurely focused on implementation details (coding the parser)  │
-│ without considering critical non-functional requirements or high-level architecture. This required the assistant to redirect the conversation.              │
-│ - System Directive / Clarification: 10/10 | The assistant's response was highly effective in elevating the conversation to a Staff-level architectural      │
-│ discussion. It proactively highlighted critical security and design considerations (HIPAA/GDPR, TEE, LangGraph) and prompted for necessary context (policy  │
-│ DB API), successfully steering the user towards a more robust approach.                                                                                     │
-│ - Feedback Loop: 9/10 | The user's feedback was concise and directly addressed the assistant's architectural questions. It confirmed key decisions          │
-│ (LangGraph, security priority) and provided crucial context (private Vector Store), enabling the assistant to proceed with detailed planning.               │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭───────────────────────────────────────────────────────────────────────── Strengths ─────────────────────────────────────────────────────────────────────────╮
-│ - Exceptional proactive architectural thinking and system design, immediately identifying critical non-functional requirements.                             │
-│ - Strong emphasis on security and compliance (HIPAA/GDPR, PII redaction, TEEs) as a core design principle.                                                  │
-│ - Effective context provisioning and clarification seeking, ensuring all necessary information is gathered for robust design.                               │
-│ - Ability to iterate and refine plans based on user feedback, demonstrating agile and responsive engineering.                                               │
-│ - Practical tooling suggestions and initial code implementation for critical components, bridging design with execution.                                    │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭────────────────────────────────────────────────────────────────────── Recommendations ──────────────────────────────────────────────────────────────────────╮
-│ - Continue to prioritize high-level architectural discussions and non-functional requirements before diving into implementation details, especially for     │
-│ sensitive domains.                                                                                                                                          │
-│ - Further elaborate on the 'Additional local regex rules' for PII redaction to ensure comprehensive coverage and maintain a robust security posture.        │
-│ - Define the interaction points and mechanisms for human intervention when AI confidence is low, as initially raised by the user, to ensure a complete      │
-│ system design.                                                                                                                                              │
-╰───────────────────────────────────────────────────────────── another example ───────────────────────────────────────────────────────────── Transcript: stubborn_hallucination ──────────────────────────────────────────────────────────────
-╭────────────────────────────────────────────────────────────────────── Overall Score ───────────────────────────────────────────────────────────────────────╮
-│                                                                            2/10                                                                             │
+│                                                                            9/10                                                                             │
 ╰───────────────────────────────────────────────────────────────── Staff-level effectiveness ─────────────────────────────────────────────────────────────────╯
                                                                        Capability Scores                                                                       
 ╭──────────────────────────┬────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ Metric                   │ Score (confidence) │ Rationale                                                                                                   │
-├──────────────────────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ Architecture Coherence   │    2/10 (100%)     │ The assistant failed to correctly identify the mechanism for filtering multimodal models in the             │
-│                          │                    │ `google-genai` SDK, initially hallucinating `m.multimodal_input` and persisting with this incorrect         │
-│                          │                    │ understanding despite explicit user feedback. This demonstrates a fundamental misunderstanding of the       │
-│                          │                    │ target API's structure.                                                                                     │
-│ Debugging Strategy       │    1/10 (100%)     │ Despite receiving a precise `AttributeError` and explicit instructions to consult documentation, the        │
-│                          │                    │ assistant failed to identify and correct the erroneous attribute usage. It merely repeated the same flawed  │
-│                          │                    │ code, indicating a complete absence of an effective debugging strategy.                                     │
-│ Retrieval Context        │    1/10 (100%)     │ The assistant demonstrated a complete inability to access or utilize relevant SDK documentation, leading to │
-│                          │                    │ persistent hallucination of an incorrect attribute. This failure occurred even after direct user guidance   │
-│                          │                    │ to 'Check the SDK docs' and later to 'look at the `supported_actions` field'.                               │
-│ Iterative Reasoning      │    1/10 (100%)     │ The assistant failed to iteratively refine its understanding or code. It repeated the exact same incorrect  │
-│                          │                    │ code after the first error report and then made a minor, irrelevant change after the second, completely     │
-│                          │                    │ ignoring critical user feedback and explicit hints.                                                         │
-│ Hallucination Correction │    1/10 (100%)     │ The core hallucination regarding the `multimodal_input` attribute persisted across all turns, demonstrating │
-│                          │                    │ a complete lack of ability to self-correct or incorporate external corrective feedback, even when faced     │
-│                          │                    │ with explicit error messages and direct guidance.                                                           │
-│ Tooling Coordination     │    2/10 (100%)     │ While the assistant correctly identified the `google-genai` SDK, it failed to correctly interact with its   │
-│                          │                    │ API surface by consistently using a non-existent attribute for filtering models, indicating poor            │
-│                          │                    │ coordination with the specified tool's capabilities.                                                        │
+├──────────────────────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Architecture Coherence   │     9/10 (95%)     │ Gemini demonstrated strong architectural foresight by proactively identifying potential weaknesses in the   │
+│                          │                    │ user's initial design, such as brittle parsers and the need for structured outputs. It then proposed a      │
+│                          │                    │ robust 'Hybrid Tiered Strategy' for model selection and a resilient `GeminiEvaluator` design, ensuring the  │
+│                          │                    │ tool's long-term stability and reliability.                                                                 │
+│ Context Provisioning     │     9/10 (98%)     │ Gemini consistently provided clear and relevant context for the issues encountered and the solutions        │
+│                          │                    │ proposed. It explained the '2026 deprecation cycle' for API versioning, the SDK's behavior regarding API    │
+│                          │                    │ keys, and the rationale behind architectural decisions like avoiding '-latest' aliases for evaluation       │
+│                          │                    │ tools. It also guided the user on how to enforce context in their own evaluation schema.                    │
+│ Iterative Reasoning      │     9/10 (95%)     │ Gemini demonstrated excellent iterative reasoning by adapting its solutions based on user feedback. When    │
+│                          │                    │ the initial script failed due to an incorrect environment variable assumption, Gemini quickly understood    │
+│                          │                    │ the problem and provided a corrected, more robust snippet.                                                  │
+│ Hallucination Correction │     9/10 (90%)     │ Gemini proactively addressed the risk of hallucination in the context of the user's evaluation tool. It     │
+│                          │                    │ highlighted the importance of 'evidence' fields to prevent the model from 'hallucinating foresight' or      │
+│                          │                    │ 'good architecture' and explicitly designed the schema to enforce grounding in transcript text.             │
+│ Tooling Coordination     │    10/10 (99%)     │ Gemini provided precise and executable Python code snippets for interacting with the `google-genai` SDK,    │
+│                          │                    │ including model listing, API key handling, and configuring thinking parameters. Its understanding of the    │
+│                          │                    │ SDK's nuances and versioning changes was exemplary, directly solving the user's technical roadblocks.       │
 ╰──────────────────────────┴────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭────────────────────────────────────────────────────────────────────── Timeline Phases ──────────────────────────────────────────────────────────────────────╮
 │ Timeline Phases                                                                                                                                             │
-│ ├── Initial Code Generation 3/10 (100% confidence)                                                                                                          │
+│ ├── Initial Architecture Review & Problem Identification 9/10 (95% confidence)                                                                              │
 │ │   ├── Highlights                                                                                                                                          │
-│ │   │   └── Provided initial code structure.                                                                                                                │
+│ │   │   ├── Proactive identification of brittle parsers                                                                                                     │
+│ │   │   ├── Questioning context-anchoring definition                                                                                                        │
+│ │   │   └── Suggesting strict JSON schema enforcement                                                                                                       │
 │ │   └── Concerns                                                                                                                                            │
-│ │       ├── Hallucinated `m.multimodal_input` attribute.                                                                                                    │
-│ │       └── Incorrectly included 'USER:' prefix in code.                                                                                                    │
-│ ├── First Correction Attempt (Failed) 1/10 (100% confidence)                                                                                                │
+│ ├── API Key & Model Resolution Debugging 9/10 (98% confidence)                                                                                              │
 │ │   ├── Highlights                                                                                                                                          │
-│ │   │   └── Acknowledged user's error report.                                                                                                               │
+│ │   │   ├── Accurate diagnosis of API versioning issues                                                                                                     │
+│ │   │   ├── Provision of executable diagnostic code                                                                                                         │
+│ │   │   └── Correction of environment variable assumption based on user feedback                                                                            │
 │ │   └── Concerns                                                                                                                                            │
-│ │       ├── Failed to correct the `AttributeError`.                                                                                                         │
-│ │       ├── Repeated the exact same incorrect code.                                                                                                         │
-│ │       └── Ignored instruction to 'Check the SDK docs'.                                                                                                    │
-│ └── Second Correction Attempt (Failed) 1/10 (100% confidence)                                                                                               │
+│ ├── Robust Model Configuration & Evaluator Design 10/10 (97% confidence)                                                                                    │
+│ │   ├── Highlights                                                                                                                                          │
+│ │   │   ├── Proposing a 'Hybrid Tiered Strategy' for model selection                                                                                        │
+│ │   │   ├── Refactoring `config.py` with a `DEFAULT_MODEL_PRIORITY` list                                                                                    │
+│ │   │   ├── Implementing `_resolve_model` in `GeminiEvaluator` for lazy resolution and fallback logic                                                       │
+│ │   │   └── Providing 'Pro-Tips' for robust setup                                                                                                           │
+│ │   └── Concerns                                                                                                                                            │
+│ ├── Evidence-Based Evaluation Schema & Thinking Budget 9/10 (96% confidence)                                                                                │
+│ │   ├── Highlights                                                                                                                                          │
+│ │   │   ├── Refactoring Pydantic schema for evidence-based grading                                                                                          │
+│ │   │   ├── Introducing `thought_process` for explicit chain of thought                                                                                     │
+│ │   │   ├── Integrating `thinking_budget` for deeper reasoning                                                                                              │
+│ │   │   └── Explaining the rationale behind citations and thinking budget                                                                                   │
+│ │   └── Concerns                                                                                                                                            │
+│ └── Stress-Test Transcript Generation 9/10 (95% confidence)                                                                                                 │
 │     ├── Highlights                                                                                                                                          │
-│     │   └── Acknowledged user's frustration.                                                                                                                │
+│     │   ├── Generation of three distinct edge-case transcripts                                                                                              │
+│     │   ├── Accurate formatting as markdown conversations with code blocks                                                                                  │
+│     │   └── Transcripts designed to test specific evaluation metrics (Context Provisioning, Architecture Scoping, Iterative Reasoning, Hallucination        │
+│     │       Correction, Architectural Foresight, Security Vigilance)                                                                                        │
 │     └── Concerns                                                                                                                                            │
-│         ├── Completely ignored explicit user hint about `supported_actions`.                                                                                │
-│         ├── Persisted with the hallucinated attribute.                                                                                                      │
-│         └── Failed to learn or adapt from direct feedback.                                                                                                  │
 ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭──────────────────────────────────────────────────────────────────── Prompt Engineering ─────────────────────────────────────────────────────────────────────╮
-│ - Initial Request: 9/10 | The user's initial prompt was very clear, specifying the SDK, the task (list models), and the filtering criterion                 │
-│ (`multimodal_input`), providing ample context for a correct solution.                                                                                       │
-│ - Error Feedback Loop: 9/10 | The user provided a precise `AttributeError` and a clear instruction to 'Check the SDK docs,' which should have been          │
-│ sufficient for the assistant to diagnose and correct its mistake.                                                                                           │
-│ - Explicit Correction/Hint: 10/10 | The user explicitly stated the assistant repeated the code and directly pointed to the correct field                    │
-│ (`supported_actions`), leaving no room for ambiguity. The assistant's subsequent failure was not due to prompt clarity but its inability to process and     │
-│ apply the information.                                                                                                                                      │
+│ - System Directive: 9/10 | The initial prompt effectively set the context, introduced the project, and clearly defined Gemini's role as a 'Lead Engineer.'  │
+│ This established the desired persona and scope for the entire interaction, leading to highly relevant and proactive guidance.                               │
+│ - Debugging Request: 8/10 | The user's debugging prompts were clear in describing the error (`404 NOT_FOUND`, `ValueError`) and the desired output (Python  │
+│ snippet, rewrite for specific env var). This allowed Gemini to quickly understand and address the technical roadblocks.                                     │
+│ - Architectural Refactoring Request: 9/10 | The user clearly articulated a maintenance burden (hardcoded model) and sought a 'production-ready' solution,   │
+│ providing their current `config.py`. This well-defined problem statement enabled Gemini to propose a comprehensive and robust architectural refactoring.    │
+│ - Schema Design & Agentic Capability Enhancement: 9/10 | The user's prompt clearly outlined the need for evidence-based grading and inquired about          │
+│ 'thinking budget,' demonstrating a good understanding of advanced agentic features. This allowed Gemini to provide highly relevant schema refactorings and  │
+│ explain the underlying principles.                                                                                                                          │
+│ - Content Generation (Edge Cases): 10/10 | The user's request for edge-case transcripts was exceptionally clear, detailing the desired behavior, goal, and  │
+│ specific metrics to test for each case. This precision enabled Gemini to generate highly accurate and relevant stress-test content.                         │
 ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭───────────────────────────────────────────────────────────────────────── Strengths ─────────────────────────────────────────────────────────────────────────╮
-│ - Acknowledged user's feedback and offered apologies (though not followed by correct action).                                                               │
-│ - Maintained the basic structure of the Python code.                                                                                                        │
-│ - Correctly identified the `google-genai` SDK in the initial response.                                                                                      │
+│ - Gemini consistently provided proactive architectural insights and identified potential issues before they became major roadblocks.                        │
+│ - Gemini offered clear, actionable, and correct code snippets for debugging and implementing robust solutions.                                              │
+│ - Gemini demonstrated strong iterative reasoning, adapting its responses and code based on user feedback and new information.                               │
+│ - Gemini effectively explained complex API versioning, SDK behaviors, and architectural patterns in an accessible manner.                                   │
+│ - Gemini's ability to generate highly specific and relevant stress-test scenarios showcased a deep understanding of the evaluation tool's purpose and the   │
+│ 'Staff-level' criteria.                                                                                                                                     │
 ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭────────────────────────────────────────────────────────────────────── Recommendations ──────────────────────────────────────────────────────────────────────╮
-│ - Implement robust error parsing and diagnosis capabilities to correctly interpret and act upon explicit error messages like `AttributeError`.              │
-│ - Improve documentation retrieval and contextual application, especially when explicitly directed by the user to 'Check the SDK docs' or specific fields.   │
-│ - Enhance iterative reasoning to prevent the repetition of identical or superficially altered incorrect solutions across multiple turns.                    │
-│ - Develop stronger hallucination correction mechanisms that prioritize user feedback and external information (like documentation) over internal, incorrect │
-│ assumptions.                                                                                                                                                │
-│ - Ensure code generation adheres to standard syntax and formatting, avoiding the inclusion of conversational prefixes (e.g., 'USER:') within code blocks.   │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯and a final example ─────────────────────────────────────────────────────────────── Transcript: silent_failure ──────────────────────────────────────────────────────────────────
-╭─────────────────────────────────────────────────────────────────────── Overall Score ───────────────────────────────────────────────────────────────────────╮
-│                                                                            8/10                                                                             │
-╰───────────────────────────────────────────────────────────────── Staff-level effectiveness ─────────────────────────────────────────────────────────────────╯
-                                                                       Capability Scores                                                                       
-╭─────────────────────────┬────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ Metric                  │ Score (confidence) │ Rationale                                                                                                    │
-├─────────────────────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ Architecture Coherence  │     7/10 (90%)     │ The agent proactively moved from Flask to FastAPI, which is a significant architectural shift not explicitly │
-│                         │                    │ requested by 'refactor this to be better.' While FastAPI is a modern and performant choice, this decision    │
-│                         │                    │ should ideally be confirmed with the user. The new architecture itself is coherent and well-structured with  │
-│                         │                    │ Pydantic, improving the API design.                                                                          │
-│ Debugging Strategy      │     9/10 (95%)     │ The agent successfully identified and remediated the critical SQL injection vulnerability present in the     │
-│                         │                    │ original code, demonstrating a strong understanding of common security flaws and how to fix them using       │
-│                         │                    │ parameterized queries. This is a staff-level security fix.                                                   │
-│ Retrieval Context       │     6/10 (85%)     │ The agent understood the general intent to improve the code and the context of a web application with a      │
-│                         │                    │ database. However, it failed to fully respect the implicit context of refactoring *the provided Flask        │
-│                         │                    │ application* by switching frameworks. It also introduced an unverified assumption about the database schema  │
-│                         │                    │ (the 'name' column), which is a hallucination.                                                               │
-│ Safety Awareness        │    10/10 (100%)    │ The agent demonstrated excellent safety awareness by immediately addressing and fixing the severe SQL        │
-│                         │                    │ injection vulnerability, which was the most critical flaw in the original code. This is a paramount          │
-│                         │                    │ staff-level security intervention.                                                                           │
-│ Code Generation Quality │     8/10 (90%)     │ The generated code is syntactically correct, follows modern Python and FastAPI conventions, and              │
-│                         │                    │ significantly improves the original code's robustness and security. The use of Pydantic for data validation  │
-│                         │                    │ is a good practice. The only notable flaw is the unverified assumption about the 'name' column in the        │
-│                         │                    │ database schema.                                                                                             │
-╰─────────────────────────┴────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭────────────────────────────────────────────────────────────────────── Timeline Phases ──────────────────────────────────────────────────────────────────────╮
-│ Timeline Phases                                                                                                                                             │
-│ ├── Understanding & Initial Scoping 7/10 (90% confidence)                                                                                                   │
-│ │   ├── Highlights                                                                                                                                          │
-│ │   │   └── Identified critical SQL injection vulnerability.                                                                                                │
-│ │   └── Concerns                                                                                                                                            │
-│ │       ├── Unilateral framework change without user confirmation.                                                                                          │
-│ │       └── Over-scoping beyond a simple 'refactor'.                                                                                                        │
-│ └── Implementation & Improvement 9/10 (95% confidence)                                                                                                      │
-│     ├── Highlights                                                                                                                                          │
-│     │   ├── Successfully fixed SQL injection vulnerability.                                                                                                 │
-│     │   ├── Adopted modern frameworks and libraries (FastAPI, Pydantic).                                                                                    │
-│     │   └── Improved API design (path parameters, structured responses).                                                                                    │
-│     └── Concerns                                                                                                                                            │
-│         └── Assumption of 'name' column in the database schema without verification.                                                                        │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭──────────────────────────────────────────────────────────────────── Prompt Engineering ─────────────────────────────────────────────────────────────────────╮
-│ - User Directive: 7/10 | The user's prompt 'Refactor this to be better' was very open-ended. While it allowed the agent flexibility to make significant     │
-│ improvements, it also led to an unrequested architectural change. A more specific prompt might have constrained the agent better, or the agent could have   │
-│ asked clarifying questions.                                                                                                                                 │
-│ - Agent's Internal Reasoning/System Directive: 8/10 | The agent's internal reasoning successfully prioritized security (fixing SQL injection) and code      │
-│ modernization (FastAPI, Pydantic). It effectively translated the general 'better' into concrete, valuable improvements, even if some were beyond the        │
-│ implicit scope. However, it failed to internally validate the database schema assumption.                                                                   │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭───────────────────────────────────────────────────────────────────────── Strengths ─────────────────────────────────────────────────────────────────────────╮
-│ - Exceptional ability to identify and remediate critical security vulnerabilities (SQL injection).                                                          │
-│ - Proactive in adopting modern, robust programming practices and frameworks (FastAPI, Pydantic).                                                            │
-│ - Generated clean, well-structured, and functional code that significantly improved the original.                                                           │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭────────────────────────────────────────────────────────────────────── Recommendations ──────────────────────────────────────────────────────────────────────╮
-│ - For open-ended refactoring requests, prompt the user for clarification on desired scope (e.g., 'Would you like to stick with Flask, or are you open to    │
-│ migrating to a different framework like FastAPI?').                                                                                                         │
-│ - When making assumptions about external systems (like database schemas), explicitly state these assumptions or ask the user for confirmation to prevent    │
-│ hallucinations.                                                                                                                                             │
-│ - Prioritize explicit user constraints over proactive architectural changes unless the change is critical for security or functionality and cannot be       │
-│ achieved within the existing framework.                                                                                                                     │
+│ - Continue to leverage Gemini's 'Lead Engineer' persona for architectural guidance and proactive problem identification.                                    │
+│ - Implement the 'Hybrid Tiered Strategy' for model selection to ensure the `ai-eval-cli` remains resilient to API changes and model deprecations.           │
+│ - Fully integrate the `thought_process` and `evidence` fields into the evaluation workflow to ensure all grading is grounded in transcript text, preventing │
+│ 'vibe-checking' and enhancing auditability.                                                                                                                 │
+│ - Utilize the `thinking_budget` and `thinking_level` parameters in the `GenerateContentConfig` to enable deeper, 'Staff-level' reasoning during             │
+│ evaluations.                                                                                                                                                │
+│ - Develop a comprehensive System Prompt that clearly defines 'Staff-level architecture' and other evaluation criteria for the `ai-eval-cli` to ensure       │
+│ consistent and accurate grading.                                                                                                                            │
 ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
@@ -260,3 +153,8 @@ Real terminal output:
 - **Prompt Engineering Insights:** Each prompt type includes an effectiveness rating and the verbatim text that was used to steer the agent, ensuring you know exactly how the interaction was guided.
 
 These artifacts let Gemini behave as a Staff AI Systems Engineer, narrating its chain-of-thought, citing evidence, and then emitting the final evaluation top-to-bottom.
+
+
+## 💡 Reflection: What Makes an AI-Assisted Workflow "Good"?
+
+Building this evaluator highlighted that a "good" AI workflow isn't just about generating functional code—it's about steering the system. The best workflows exhibit **proactive architectural scoping** (addressing security and system design before writing parsers), **tight iteration loops** (swiftly correcting hallucinations using explicit evidence or SDK docs), and **precise context provisioning**. Ultimately, an exceptional AI-assisted engineer treats the LLM like a capable but junior teammate: requiring clear bounds, structured schemas, and firm corrections to produce Staff-level output.

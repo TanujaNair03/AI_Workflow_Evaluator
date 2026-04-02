@@ -18,13 +18,17 @@ def build_eval_prompt(payload: TranscriptPayload) -> str:
 
     instruction = (
         "You are a Staff AI Systems Engineer evaluating a candidate's agentic workflow. Assess their architecture scoping, "
-        "context provisioning, iterative reasoning, hallucination correction, and tooling coordination."
+        "context provisioning, iterative reasoning, hallucination correction, and tooling coordination. Transcript speaker "
+        "labels may be inconsistent (e.g., 'User', 'Claude', 'Agent', 'You'), so do not rely on specific labels—infer "
+        "conversational turns and speaker identities purely from the context of the dialogue."
     )
 
     schema_guidance = (
         "Return a single JSON object that complies with the TranscriptEvaluation schema: "
         "overall_score (1-10), capability_scores, timeline_phases, prompt_engineering, recommendations, strengths, "
-        "and optional evaluator_notes. Each capability and phase must reference the Staff-level behavior you observed."
+        "and optional evaluator_notes. ModelConfig rules must be enforced exactly—adhere strictly to the configured "
+        "thinking_level and enforce_citations parameters. Every capability and phase score requires verbatim transcript "
+        "quotes in the corresponding evidence fields with no paraphrasing."
     )
 
     prompt = (

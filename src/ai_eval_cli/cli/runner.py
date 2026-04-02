@@ -3,15 +3,14 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import List
 
-from loguru import logger
 from rich.console import Console
 
 from ..config import CLIConfig
 from ..evaluation.client import GeminiEvaluator
 from ..ingestion.json import JSONTranscriptParser
-from ..ingestion.markdown import MarkdownTranscriptParser
+from ..ingestion.raw_text import RawTextTranscriptParser
 from ..schema.evaluation import (
     CapabilityScore,
     PhaseScore,
@@ -21,12 +20,16 @@ from ..schema.evaluation import (
 from .dashboard import render_comparison, render_single
 
 
+_SUPPORTED_TRANSCRIPT_EXTENSIONS = frozenset({".json", ".md", ".txt"})
+
+
 def main() -> None:
     console = Console()
     namespace = _parse_args()
     parsers = {
         ".json": JSONTranscriptParser(),
     }
+    raw_text_parser = RawTextTranscriptParser()
 
     if namespace.dry_run:
         evaluator = None
@@ -36,9 +39,8 @@ def main() -> None:
 
     evaluations: List[TranscriptEvaluation] = []
 
-    for path_str in namespace.transcripts:
-        path = Path(path_str)
-        parser = parsers.get(path.suffix.lower(), MarkdownTranscriptParser())
+    for path in namespace.transcripts:
+        parser = parsers.get(path.suffix.lower(), raw_text_parser)
         payload = parser.parse(path)
 
         if namespace.dry_run:
@@ -63,7 +65,10 @@ def main() -> None:
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="AI Eval CLI")
     parser.add_argument(
-        "transcripts", nargs="+", help="Paths to transcript files (.md or .json)"
+        "transcripts",
+        nargs="+",
+        type=_validate_transcript_path,
+        help="Paths to transcript files (.md, .txt, or .json)",
     )
     parser.add_argument("--json", action="store_true", help="Dump raw JSON evaluations.")
     parser.add_argument(
@@ -74,6 +79,18 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--api-key", help="Gemini API key (overrides GENAI_API_KEY).")
     parser.add_argument("--model", help="Gemini model name (defaults from config).")
     return parser.parse_args()
+
+
+def _validate_transcript_path(value: str) -> Path:
+    path = Path(value)
+    suffix = path.suffix.lower()
+    if suffix not in _SUPPORTED_TRANSCRIPT_EXTENSIONS:
+        supported = ", ".join(sorted(_SUPPORTED_TRANSCRIPT_EXTENSIONS))
+        readable_suffix = suffix or "<no extension>"
+        raise argparse.ArgumentTypeError(
+            f"Unsupported transcript format '{readable_suffix}'. Supported extensions: {supported}."
+        )
+    return path
 
 
 def _mock_evaluation(transcript_id: str) -> TranscriptEvaluation:

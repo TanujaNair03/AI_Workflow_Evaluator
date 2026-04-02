@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from loguru import logger
 
@@ -20,15 +20,24 @@ class JSONTranscriptParser(BaseTranscriptParser):
             logger.exception("Invalid JSON transcript %s: %s", path, exc)
             raise
 
-        messages_source = self._find_message_source(payload)
-        if not messages_source:
-            logger.error("No messages found in JSON transcript %s", path)
-            raise ValueError(f"No messages found in JSON transcript {path}")
-
         metadata = self._extract_metadata(payload, path)
         transcript_id = self._infer_transcript_id(payload, path)
 
-        messages = [self._normalize_entry(entry) for entry in messages_source]
+        messages_source = self._find_message_source(payload)
+        if messages_source:
+            metadata.setdefault("structure", "conversation")
+            messages = [self._normalize_entry(entry) for entry in messages_source]
+        else:
+            logger.warning(
+                "JSON transcript %s does not expose a message sequence; sending raw dump", path
+            )
+            metadata["structure"] = "raw_dump"
+            messages = [
+                TranscriptMessage(
+                    role="transcript",
+                    text=self._format_payload_dump(payload),
+                )
+            ]
 
         return TranscriptPayload(
             transcript_id=transcript_id,
@@ -127,3 +136,9 @@ class JSONTranscriptParser(BaseTranscriptParser):
                 if isinstance(value, str) and value.strip():
                     return value.strip()
         return path.stem
+
+    def _format_payload_dump(self, payload: Any) -> str:
+        try:
+            return json.dumps(payload, indent=2, ensure_ascii=False)
+        except (TypeError, ValueError):
+            return str(payload)
